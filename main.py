@@ -1,9 +1,9 @@
-import requests
-import csv
-import ssl
+import requests, csv, ssl, json, os, sys,  urllib.request
+from base64 import b64decode
 import numpy as np
-import json
 from datetime import date
+from pathlib import Path
+import urllib.request
 
 # Parametros geral de emissão
 datahoje = date.today()
@@ -97,17 +97,51 @@ def emite_boleto(apartamento):
         "cnpjCPFBeneficiario": "35801021000190",
         "numDiasAgenda": "TRINTA"  
     })
-
-    
+           
     print(payload)
     request = requests.request("POST", url, headers=headers, data=payload, cert=('./certificado/API_Certificado.crt', './certificado/API_Chave.key'))
     print(request.content)  
     print(request.text)
-    print(request)           
+    print(request)
+    return (""+datahoje.strftime("%d%m%y")+apartamento+"")
 
 
+def imprime_boleto():
+    payload={}
+    filename =  Path('BancoInter.pdf')
+    url = 'https://apis.bancointer.com.br:8443/openbanking/v1/certificado/boletos/00683506853/pdf'
+    header  = {'x-inter-conta-corrente': '49607405', 'content-type': 'application/base64', 'content-type': 'application/json', }
+    requisicao = requests.get(url, headers=header, data=payload, cert=('./certificado/API_Certificado.crt', './certificado/API_Chave.key'))
+    bytes = b64decode(requisicao.text, validate=True)
+    f = open('file.pdf', 'wb')
+    f.write(bytes)
+    f.close()
+
+
+    
 #apartamento = emite_boleto('101')
-list_boletos()
+
+
+
+
+#url = "https://apis.bancointer.com.br:8443/openbanking/v1/certificado/boletos/00683506853/pdf"
+
+# payload={}
+# headers = {
+#   'content-type': 'application/json',
+#   'content-type': 'application/base64',
+#   'x-inter-conta-corrente': '49607405'
+# }
+
+# response = requests.request("GET", url, headers=headers, data=payload)
+
+#print(response.text)
+
+
+imprime_boleto()
+
+
+
 
 
 #https://developers.bancointer.com.br/reference#post_boletos
