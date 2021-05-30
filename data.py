@@ -1,5 +1,5 @@
 from datetime import date
 
-data = date.today()
+datahoje = date.today().strftime("%Y-%m-%d")
 ap = "101"
-print(data)
+print (datahoje)
