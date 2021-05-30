@@ -3,4 +3,6 @@ certificado/API_Certificado.crt
 certificado/API_Chave.key
 pagadores/pagadores.csv
 *.pdf
-data.py
+sendMail.py
+teste.py
+__pycache__/data.cpython-38.pyc

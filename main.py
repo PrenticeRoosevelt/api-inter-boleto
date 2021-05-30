@@ -1,12 +1,8 @@
 from base64 import b64decode
 from pathlib import Path
-import requests, json, time
-import csv
-import ssl
-import numpy as np
+import requests, json, time, csv
 from datetime import date
-
-
+from sendMail import envioEmail
 
 
 # Parametros geral de emissão
@@ -115,6 +111,9 @@ def emite_boleto(apartamento):
     imprime_boleto(nossoNumero, file)
     print ("\nSaindo do imprime boleto e voltando para o Gera Boleto")
 
+    envioEmail((json.loads(payload).get("pagador")["email"]), (json.loads(payload).get("pagador")["nome"]), vencimento, file)
+
+
 
 def imprime_boleto(nossoNumero, file):
     payload={}
@@ -128,16 +127,18 @@ def imprime_boleto(nossoNumero, file):
     f.close()
     print ("Imprime Boleto OK")
 
+envioEmail("isabelaviegas@gmail.com", "EDSON CAMPOLINA PONTES", "10/06/2021", "27052021101.pdf")
 
-emite_boleto('101')
-emite_boleto('102')
-emite_boleto('103')
-emite_boleto('104')
-emite_boleto('203')
-emite_boleto('204')
-emite_boleto('301')
-emite_boleto('302')
-emite_boleto('304')
+
+# emite_boleto('101')
+# emite_boleto('102')
+# emite_boleto('103')
+# emite_boleto('104')
+# emite_boleto('203')
+# emite_boleto('204')
+# emite_boleto('301')
+# emite_boleto('302')
+# emite_boleto('304')
 
 #print(list_boletos())
 
