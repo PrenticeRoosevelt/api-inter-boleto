@@ -2,4 +2,5 @@
 certificado/API_Certificado.crt
 certificado/API_Chave.key
 pagadores/pagadores.csv
-29052021102
+*.pdf
+data.py

@@ -1,6 +1,6 @@
 from base64 import b64decode
 from pathlib import Path
-import requests, json
+import requests, json, time
 import csv
 import ssl
 import numpy as np
@@ -8,9 +8,11 @@ from datetime import date
 
 
 
+
 # Parametros geral de emissão
 datahoje = date.today()
 vencimento = "2021-06-07"
+mensagem = "Boleto referente ao mes de abril pago em maio."
 ################################
 
 def list_boletos():
@@ -61,11 +63,11 @@ def emite_boleto(apartamento):
             "tipoPessoa": dados[apto_posicao][13]
         },
         "dataEmissao": datahoje.strftime("%Y-%m-%d"),
-        "seuNumero": ""+datahoje.strftime("%d%m%Y")+apartamento+"",
+        "seuNumero": datahoje.strftime("%Y%m")+apartamento,
         "dataLimite": "SESSENTA",
-        "dataVencimento": ""+vencimento+"",
+        "dataVencimento": vencimento,
         "mensagem": {
-            "linha1": "Boleto referente ao mes de abril pago em maio."
+            "linha1": mensagem
         },
         "desconto1": {
             "codigoDesconto": "NAOTEMDESCONTO",
@@ -102,20 +104,14 @@ def emite_boleto(apartamento):
     })
 
     request = requests.request("POST", url, headers=headers, data=payload, cert=('./certificado/API_Certificado.crt', './certificado/API_Chave.key'))
-    print("Imprimindo request content")
-    print(request.content)
     print("\nImprimindo request text")
     print(request.text)
-    print("\nImprimindo request")
+    print("\nStatus Request")
     print(request)
-    print ("\n\n\nGeracao de boleto OK, chamando Imprime Boleto")
-    #return (request.content)
-    #return (""+datahoje.strftime("%d%m%y")+apartamento+"")
     nossoNumero = (json.loads(request.content).get("nossoNumero"))
-    print ("\n\n\nEsse eh o NossoNumero: "+nossoNumero)
-    file = (""+datahoje.strftime("%d%m%Y")+apartamento+".pdf")
-    print ("\nEsse eh o nome do arquivo "+file)
+    file = (""+datahoje.strftime("%Y%m")+apartamento+".pdf")
     print ("\nGeracao de boleto OK, chamando Imprime Boleto")
+    time.sleep(5)
     imprime_boleto(nossoNumero, file)
     print ("\nSaindo do imprime boleto e voltando para o Gera Boleto")
 
@@ -132,24 +128,20 @@ def imprime_boleto(nossoNumero, file):
     f.close()
     print ("Imprime Boleto OK")
 
+
+emite_boleto('101')
 emite_boleto('102')
+emite_boleto('103')
+emite_boleto('104')
+emite_boleto('203')
+emite_boleto('204')
+emite_boleto('301')
+emite_boleto('302')
+emite_boleto('304')
 
-# nossoNumero = (json.loads(retornoBoleto).get("nossoNumero"))
-# print ("\n\n\nEsse eh o NossoNumero: "+nossoNumero)
-# file = (""+datahoje.strftime("%d%m%y")+"102")
-# print ("\nEsse eh o nome do arquivo "+file)
-# imprime_boleto(nossoNumero, file)
-# print ("\nSaindo do imprime boleto e voltando para o Gera Boleto")
+#print(list_boletos())
 
-
-
-#print (json.loads(list_boletos()).get("totalPages"))
-
-# uva = jaca.get("content")
-# print (uva.get("nossoNumero"))
-#print (jaca.get("totalPages"))
-
-
+#imprime_boleto("SEUNUMERO", "NOME_ARQUIVO.pdf")
 
 
 
