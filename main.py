@@ -122,7 +122,7 @@ def imprime_boleto(nossoNumero, file):
 
 
 
-#emite_boleto('102')
+# emite_boleto('102')
 # emite_boleto('102')
 # emite_boleto('103')
 # emite_boleto('104')
