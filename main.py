@@ -9,6 +9,14 @@ from sendMail import envioEmail
 datahoje = date.today()
 vencimento = "2021-06-07"
 mensagem = "Boleto referente ao mes de abril pago em maio."
+
+# Importação dos dados
+dados = []
+with open('./pagadores/pagadores.csv') as csvfile:
+    csvReader = csv.reader(csvfile)
+    for row in csvReader:
+        dados.append(row)
+
 ################################
 
 def list_boletos():
@@ -18,30 +26,19 @@ def list_boletos():
     request = requests.get(url, headers=header, params=parametros, cert=('./certificado/API_Certificado.crt', './certificado/API_Chave.key'))
     return (request.content)
 
-dados = []
-with open('./pagadores/pagadores.csv') as csvfile:
-    csvReader = csv.reader(csvfile)
-    for row in csvReader:
-        dados.append(row)
-
-def func_pesquisa_posicao(posicao):
-    pos_i = 0
-
-    for i in range (len(dados)):
-        if posicao in dados[i][0]:
-            pos_i = i
-            break
-    return(pos_i)
-
 def emite_boleto(apartamento):
-    apto_posicao = func_pesquisa_posicao(apartamento)
+    
+    apto_posicao = 0
+    for i in range (len(dados)):
+        if apartamento in dados[i][0]:
+            apto_posicao = i
+            break
+    if apto_posicao == 0:
+        print ("Apartamento não localizado no arquivo")
+        return 0
+
     url = 'https://apis.bancointer.com.br:8443/openbanking/v1/certificado/boletos'
-    headers  = {
-        'x-inter-conta-corrente': '49607405',
-        'accept': 'application/json',
-        'content-type': 'application/json'
-    }
-    aux = {}
+    headers  = {'x-inter-conta-corrente': '49607405', 'accept': 'application/json', 'content-type': 'application/json'}
     payload = json.dumps({
         "pagador":{ 
             "cnpjCpf": dados[apto_posicao][1],
@@ -100,20 +97,15 @@ def emite_boleto(apartamento):
     })
 
     request = requests.request("POST", url, headers=headers, data=payload, cert=('./certificado/API_Certificado.crt', './certificado/API_Chave.key'))
-    print("\nImprimindo request text")
-    print(request.text)
-    print("\nStatus Request")
-    print(request)
+    print("\nImprimindo request text "+request.text)
+    print("\nStatus Request "+request)
     nossoNumero = (json.loads(request.content).get("nossoNumero"))
     file = (""+datahoje.strftime("%Y%m")+apartamento+".pdf")
     print ("\nGeracao de boleto OK, chamando Imprime Boleto")
     time.sleep(5)
     imprime_boleto(nossoNumero, file)
-    print ("\nSaindo do imprime boleto e voltando para o Gera Boleto")
 
     envioEmail((json.loads(payload).get("pagador")["email"]), (json.loads(payload).get("pagador")["nome"]), vencimento, file)
-
-
 
 def imprime_boleto(nossoNumero, file):
     payload={}
@@ -127,10 +119,10 @@ def imprime_boleto(nossoNumero, file):
     f.close()
     print ("Imprime Boleto OK")
 
-envioEmail("isabelaviegas@gmail.com", "EDSON CAMPOLINA PONTES", "10/06/2021", "27052021101.pdf")
 
 
-# emite_boleto('101')
+
+#emite_boleto('102')
 # emite_boleto('102')
 # emite_boleto('103')
 # emite_boleto('104')
@@ -141,7 +133,7 @@ envioEmail("isabelaviegas@gmail.com", "EDSON CAMPOLINA PONTES", "10/06/2021", "2
 # emite_boleto('304')
 
 #print(list_boletos())
-
+#envioEmail("isabelaviegas@gmail.com", "EDSON CAMPOLINA PONTES", "10/06/2021", "27052021101.pdf")
 #imprime_boleto("SEUNUMERO", "NOME_ARQUIVO.pdf")
 
 
