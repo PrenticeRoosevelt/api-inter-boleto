@@ -7,8 +7,9 @@ from sendMail import envioEmail
 
 # Parametros geral de emissão
 datahoje = date.today()
-vencimento = "2021-06-07"
-mensagem = "Boleto referente ao mes de abril pago em maio."
+vencimento = "2021-08-16"
+mensagem = "Boleto referente ao mes de agosto."
+nome_arquivo = "08-2021-"
 
 # Importação dos dados
 dados = []
@@ -98,14 +99,12 @@ def emite_boleto(apartamento):
 
     request = requests.request("POST", url, headers=headers, data=payload, cert=('./certificado/API_Certificado.crt', './certificado/API_Chave.key'))
     print("\nImprimindo request text "+request.text)
-    print("\nStatus Request "+request)
     nossoNumero = (json.loads(request.content).get("nossoNumero"))
-    file = (""+datahoje.strftime("%Y%m")+apartamento+".pdf")
+    file = (nome_arquivo+apartamento+".pdf")
     print ("\nGeracao de boleto OK, chamando Imprime Boleto")
     time.sleep(5)
     imprime_boleto(nossoNumero, file)
-
-    envioEmail((json.loads(payload).get("pagador")["email"]), (json.loads(payload).get("pagador")["nome"]), vencimento, file)
+    #envioEmail((json.loads(payload).get("pagador")["email"]), (json.loads(payload).get("pagador")["nome"]), vencimento, file)
 
 def imprime_boleto(nossoNumero, file):
     payload={}
@@ -122,19 +121,19 @@ def imprime_boleto(nossoNumero, file):
 
 
 
-# emite_boleto('102')
-# emite_boleto('102')
-# emite_boleto('103')
-# emite_boleto('104')
-# emite_boleto('203')
-# emite_boleto('204')
-# emite_boleto('301')
-# emite_boleto('302')
-# emite_boleto('304')
+emite_boleto('101')
+emite_boleto('102')
+emite_boleto('103')
+emite_boleto('104')
+emite_boleto('203')
+emite_boleto('204')
+emite_boleto('301')
+emite_boleto('302')
+emite_boleto('304')
 
 #print(list_boletos())
 #envioEmail("isabelaviegas@gmail.com", "EDSON CAMPOLINA PONTES", "10/06/2021", "27052021101.pdf")
-#imprime_boleto("SEUNUMERO", "NOME_ARQUIVO.pdf")
+#imprime_boleto("00691729653", "202106101.pdf")
 
 
 
