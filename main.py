@@ -93,7 +93,7 @@ def emite_boleto(apartamento):
             "valor":0,
             "taxa":0
         },
-        "cnpjCPFBeneficiario": "35801021000190",
+        "cnpjCPFBeneficiario": "00000000000000",
         "numDiasAgenda": "TRINTA"  
     })
 
@@ -117,23 +117,6 @@ def imprime_boleto(nossoNumero, file):
     f.write(bytes)
     f.close()
     print ("Imprime Boleto OK")
-
-
-
-
-emite_boleto('101')
-emite_boleto('102')
-emite_boleto('103')
-emite_boleto('104')
-emite_boleto('203')
-emite_boleto('204')
-emite_boleto('301')
-emite_boleto('302')
-emite_boleto('304')
-
-#print(list_boletos())
-#envioEmail("isabelaviegas@gmail.com", "EDSON CAMPOLINA PONTES", "10/06/2021", "27052021101.pdf")
-#imprime_boleto("00691729653", "202106101.pdf")
 
 
 
